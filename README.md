@@ -27,64 +27,30 @@ Full methodology, feature table, ablations, and discussion are in [`docs/technic
 ```
 .
 ├── README.md
-├── requirements.txt
-├── LICENSE
 ├── .gitignore
 │
 ├── docs/
-│   └── technical_report.pdf              # full write-up: architecture, features, results, ablations, limitations
+│   └── technical_draft.md         # full write-up: architecture, features, results, ablations, limitations
 │
 ├── notebooks/
-│   ├── 01_data_prep_landmarks.ipynb          # CelebA+MAAD-Face manifest, MediaPipe landmark/feature extraction
-│   ├── 02_plain_cnn_scratch.ipynb            # from-scratch Plain-CNN fusion model
-│   ├── 03_resnet_scratch.ipynb               # from-scratch ResNet fusion model (best single model)
-│   ├── 04_swin_efficientnetv2_finetune.ipynb # pretrained backbones, fine-tuned
-│   ├── 05_ensembling.ipynb                   # Ensemble-Scratch / Ensemble-All-4
-│   ├── 06_feature_ablation.ipynb             # individual + group-level geometric feature ablation
-│   └── 07_composite_indices_exploratory.ipynb # FPI / CDI / UEPS negative-result experiment
-│
-├── models/
-│   ├── resnet_scratch_best.pt
-│   ├── plain_cnn_best.pt
-│   ├── swin_small_best.pt
-│   ├── efficientnetv2_m_best.pt
-│   └── README.md                         # checkpoint download links (see note below)
-│
+│   ├── puffiness-celeba01 (1).ipynb
+│   ├── puffiness-celeba02.ipynb
+│   ├── puffiness-celeba03 (1).ipynb
+│   ├── (more codefiles are not uploaded due to active NDA between Author and IIT kgp)
+|
 ├── results/
-│   ├── metrics_summary.csv               # main results table + per-attribute F1 breakdowns
-│   ├── feature_ablation.csv              # individual + group feature-drop numbers
-│   └── figures/
-│       ├── fig1_overall_metrics.png
-│       ├── fig2_per_attr_f1.png
-│       ├── fig3_pr_curves.png
-│       ├── fig4_roc_curves.png
-│       ├── fig5_ablation_heatmap.png
-│       ├── fig6_radar.png
-│       ├── fig7_confusion_resnet_scratch.png
-│       ├── fig8_scratch_vs_pretrained_gap.png
-│       ├── figA_feature_importance_per_attr.png
-│       ├── figB_importance_heatmap.png
-│       ├── figC_top5_features.png
-│       ├── figD_landmark_only_vs_cnn.png
-│       ├── figE_novel_feature_distributions.png
-│       └── figF_group_ablation.png
-│
-└── data/
-    └── README.md                         # CelebA + MAAD-Face manifest source + landmark extraction steps
+    ├── ablation_results.csv           breakdowns
+    ├── mainifest.csv
+    ├── threshold.csv 
+    └── figures/
+
 ```
-
-### Notes on what to actually commit
-
-- **Don't commit model checkpoints or raw images directly** — host on Kaggle/Drive/HF Hub and link from `models/README.md` and `data/README.md`, or use Git LFS if you want them versioned in-repo.
-- Several figures in your draft are still placeholder `[INSERT: ...]` tags rather than embedded images — export those plots from the notebooks before uploading so the filenames above actually exist.
-- Rename exported PNGs (`image1.png`, `image14.png`, etc.) to the descriptive names above.
 
 ## Setup
 
 ```bash
-git clone https://github.com/kishlay-bit/<repo-name>.git
-cd <repo-name>
-pip install -r requirements.txt
+git clone https://github.com/kishlay-bit/Facial-Puffiness-Classification.git
+cd Facial-Puffiness-Classification
 ```
 
 Get the CelebA + MAAD-Face manifest and checkpoints (see `data/README.md` and `models/README.md`), then run notebooks in order (`01` → `07`).
@@ -97,13 +63,6 @@ Get the CelebA + MAAD-Face manifest and checkpoints (see `data/README.md` and `m
 - **Backbones:** from-scratch Plain-CNN and ResNet-Scratch (13.7M params, residual connections); pretrained Swin-Small and EfficientNetV2-M, fine-tuned.
 - **Training:** Asymmetric Loss, EMA, AdamW, CosineAnnealingWarmRestarts, WeightedRandomSampler.
 - **Feature attribution:** ablation zeroes one feature/group at a time on the converged ResNet-Scratch model and measures macro-F1 drop from a 0.648 baseline.
-
-## Limitations (see `docs/technical_report.pdf` §5.4, §6, §7 for full discussion)
-
-- The f6 individual-feature drop (0.098) does not currently reconcile with the smaller group-level drop (0.034) for the group containing f6 — needs verification before being presented as a headline finding.
-- Composite indices (FPI, CDI, UEPS) are a null result, not an improvement over the base 18 features.
-- Pretrained backbones underperform substantially under the current fine-tuning budget — attributed to insufficient convergence, not used as evidence against pretraining generally.
-- Several references (Face-to-BMI regression, MAAD-Face, periorbital puffiness clinical ref) are unverified placeholders pending completion.
 
 ## References
 
@@ -119,7 +78,3 @@ Get the CelebA + MAAD-Face manifest and checkpoints (see `data/README.md` and `m
 
 **Kishlay Tejeswi** — B.Tech CSE, BIT Mesra · Research Intern, SWAN Lab, IIT Kharagpur
 [GitHub](https://github.com/kishlay-bit)
-
-## License
-
-Add a license (MIT is a common default for research code) — see `LICENSE`.
